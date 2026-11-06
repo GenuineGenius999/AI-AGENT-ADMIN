@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 
 const API_BASE = (
-  import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000'
+  import.meta.env.VITE_API_BASE_URL || 'https://ai-chatbot-service-ten.vercel.app/'
 ).replace(/\/$/, '');
 
 export default function LoginPage() {
