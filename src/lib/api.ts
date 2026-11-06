@@ -50,6 +50,7 @@ export type Profile = {
 export type ApiKey = {
   id: string;
   label: string;
+  provider: 'openai' | 'deepseek';
   key_prefix: string;
   key_preview: string;
   is_active: boolean;
@@ -96,10 +97,16 @@ export const api = {
       method: 'POST',
     }),
   listKeys: () => request<{ keys: ApiKey[] }>('/api/keys'),
-  addKey: (label: string, api_key: string) =>
+  addKey: (payload: {
+    label: string;
+    api_key?: string;
+    provider?: 'openai' | 'deepseek';
+    session_cookie?: string;
+    base_url?: string;
+  }) =>
     request<{ key: ApiKey }>('/api/keys', {
       method: 'POST',
-      body: JSON.stringify({ label, api_key }),
+      body: JSON.stringify(payload),
     }),
   updateKey: (id: string, payload: { label?: string; is_active?: boolean }) =>
     request<{ key: ApiKey }>(`/api/keys/${id}`, {

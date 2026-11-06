@@ -18,6 +18,9 @@ export default function KeysPage() {
   const [series, setSeries] = useState<UsageSeries[]>([]);
   const [label, setLabel] = useState('');
   const [apiKey, setApiKey] = useState('');
+  const [provider, setProvider] = useState<'openai' | 'deepseek'>('openai');
+  const [sessionCookie, setSessionCookie] = useState('');
+  const [baseUrl, setBaseUrl] = useState('https://api.deepseek.com');
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -61,10 +64,25 @@ export default function KeysPage() {
     setError('');
     setMessage('');
     try {
-      await api.addKey(label.trim(), apiKey.trim());
+      await api.addKey({
+        label: label.trim(),
+        api_key: apiKey.trim(),
+        provider,
+        session_cookie: sessionCookie.trim(),
+        base_url:
+          provider === 'deepseek'
+            ? baseUrl.trim() || 'https://api.deepseek.com'
+            : undefined,
+      });
       setLabel('');
       setApiKey('');
-      setMessage('API key added and validated with OpenAI.');
+      setSessionCookie('');
+      setBaseUrl('https://api.deepseek.com');
+      setMessage(
+        provider === 'deepseek'
+          ? 'DeepSeek session configuration added and validated.'
+          : 'API key added and validated with OpenAI.'
+      );
       await refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to add key');
@@ -136,18 +154,55 @@ export default function KeysPage() {
             />
           </label>
           <label>
-            OpenAI API key
+            {provider === 'deepseek' ? 'DeepSeek session token' : 'OpenAI API key'}
             <input
-              required
+              required={provider !== 'deepseek'}
               type="password"
-              placeholder="sk-..."
+              placeholder={provider === 'deepseek' ? 'session=... or Bearer token' : 'sk-...'}
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
             />
           </label>
         </div>
+        <div className="two-col">
+          <label>
+            Provider
+            <select
+              value={provider}
+              onChange={(e) =>
+                setProvider(e.target.value as 'openai' | 'deepseek')
+              }
+            >
+              <option value="openai">OpenAI</option>
+              <option value="deepseek">DeepSeek</option>
+            </select>
+          </label>
+
+          {provider === 'deepseek' && (
+            <>
+              <label>
+                Session cookie
+                <input
+                  required
+                  type="password"
+                  placeholder="session=...; auth=..."
+                  value={sessionCookie}
+                  onChange={(e) => setSessionCookie(e.target.value)}
+                />
+              </label>
+              <label>
+                Base URL
+                <input
+                  placeholder="https://api.deepseek.com"
+                  value={baseUrl}
+                  onChange={(e) => setBaseUrl(e.target.value)}
+                />
+              </label>
+            </>
+          )}
+        </div>
         <button type="submit" className="btn primary" disabled={busy}>
-          {busy ? 'Validating…' : 'Add API key'}
+          {busy ? 'Validating…' : 'Add provider'}
         </button>
       </form>
 
