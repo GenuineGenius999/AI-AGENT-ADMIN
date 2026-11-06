@@ -154,11 +154,15 @@ export default function KeysPage() {
             />
           </label>
           <label>
-            {provider === 'deepseek' ? 'DeepSeek session token' : 'OpenAI API key'}
+            {provider === 'deepseek' ? 'DeepSeek token' : 'OpenAI API key'}
             <input
               required={provider !== 'deepseek'}
               type="password"
-              placeholder={provider === 'deepseek' ? 'session=... or Bearer token' : 'sk-...'}
+              placeholder={
+                provider === 'deepseek'
+                  ? 'SK... or Bearer ...'
+                  : 'sk-...'
+              }
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
             />
@@ -183,9 +187,8 @@ export default function KeysPage() {
               <label>
                 Session cookie
                 <input
-                  required
                   type="password"
-                  placeholder="session=...; auth=..."
+                  placeholder="optional: ds_session_id=...; HWWAFSESID=..."
                   value={sessionCookie}
                   onChange={(e) => setSessionCookie(e.target.value)}
                 />
@@ -193,7 +196,7 @@ export default function KeysPage() {
               <label>
                 Base URL
                 <input
-                  placeholder="https://api.deepseek.com"
+                  placeholder="https://chat.deepseek.com"
                   value={baseUrl}
                   onChange={(e) => setBaseUrl(e.target.value)}
                 />
