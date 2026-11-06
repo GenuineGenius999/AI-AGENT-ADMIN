@@ -2,7 +2,7 @@ import { supabase } from './supabase';
 
 /** Backend base URL — required when frontend is hosted separately. */
 const API_BASE = (
-  import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000'
+  import.meta.env.VITE_API_BASE_URL || 'https://ai-chatbot-service-ten.vercel.app/'
 ).replace(/\/$/, '');
 
 async function authHeaders(): Promise<HeadersInit> {
