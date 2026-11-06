@@ -3,7 +3,8 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 
 const API_BASE = (
-  import.meta.env.VITE_API_BASE_URL || 'https://ai-chatbot-service-ten.vercel.app/'
+  import.meta.env.VITE_API_BASE_URL ||
+  'https://ai-chatbot-service-ten.vercel.app'
 ).replace(/\/$/, '');
 
 export default function LoginPage() {
@@ -27,9 +28,15 @@ export default function LoginPage() {
         });
         const body = await res.json().catch(() => ({}));
         if (!res.ok) {
+          const parts = [
+            body.error,
+            body.hint,
+            body.env && !body.env.SUPABASE_SERVICE_ROLE_KEY
+              ? 'SUPABASE_SERVICE_ROLE_KEY is missing on the backend.'
+              : null,
+          ].filter(Boolean);
           throw new Error(
-            body.error ||
-              body.hint ||
+            parts.join(' ') ||
               `Could not prepare admin account (${res.status})`
           );
         }
@@ -44,7 +51,7 @@ export default function LoginPage() {
         if (!cancelled) {
           setError(
             err instanceof Error
-              ? `${err.message} — Is VITE_API_BASE_URL pointing at your backend?`
+              ? err.message
               : 'Bootstrap failed'
           );
         }
