@@ -102,6 +102,7 @@ export const api = {
     api_key?: string;
     provider?: 'openai' | 'deepseek';
     session_cookie?: string;
+    chat_session_id?: string;
     base_url?: string;
   }) =>
     request<{ key: ApiKey }>('/api/keys', {

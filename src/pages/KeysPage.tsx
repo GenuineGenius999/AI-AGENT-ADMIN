@@ -20,7 +20,8 @@ export default function KeysPage() {
   const [apiKey, setApiKey] = useState('');
   const [provider, setProvider] = useState<'openai' | 'deepseek'>('openai');
   const [sessionCookie, setSessionCookie] = useState('');
-  const [baseUrl, setBaseUrl] = useState('https://api.deepseek.com');
+  const [chatSessionId, setChatSessionId] = useState('');
+  const [baseUrl, setBaseUrl] = useState('https://chat.deepseek.com');
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -69,15 +70,17 @@ export default function KeysPage() {
         api_key: apiKey.trim(),
         provider,
         session_cookie: sessionCookie.trim(),
+        chat_session_id: chatSessionId.trim(),
         base_url:
           provider === 'deepseek'
-            ? baseUrl.trim() || 'https://api.deepseek.com'
+            ? baseUrl.trim() || 'https://chat.deepseek.com'
             : undefined,
       });
       setLabel('');
       setApiKey('');
       setSessionCookie('');
-      setBaseUrl('https://api.deepseek.com');
+      setChatSessionId('');
+      setBaseUrl('https://chat.deepseek.com');
       setMessage(
         provider === 'deepseek'
           ? 'DeepSeek session configuration added and validated.'
@@ -191,6 +194,15 @@ export default function KeysPage() {
                   placeholder="optional: ds_session_id=...; HWWAFSESID=..."
                   value={sessionCookie}
                   onChange={(e) => setSessionCookie(e.target.value)}
+                />
+              </label>
+              <label>
+                Chat session ID
+                <input
+                  type="text"
+                  placeholder="optional: actual session id"
+                  value={chatSessionId}
+                  onChange={(e) => setChatSessionId(e.target.value)}
                 />
               </label>
               <label>
